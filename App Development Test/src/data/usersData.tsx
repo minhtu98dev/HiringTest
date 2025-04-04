@@ -1,3 +1,11 @@
+interface User {
+  id: number;
+  name: string;
+  balance: number;
+  email: string;
+  registerAt: Date;
+  active: boolean;
+}
 export const usersData: User[] = [
   {
     id: 1,

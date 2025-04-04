@@ -4,15 +4,6 @@ import { MdOutlineEdit } from "react-icons/md";
 import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
 import { usersData } from "../data/usersData";
 
-interface User {
-  id: number;
-  name: string;
-  balance: number;
-  email: string;
-  registerAt: Date;
-  active: boolean;
-}
-
 const TableUser: React.FC = () => {
   const [users, setUsers] = useState(usersData); //Declare users state with initial data from usersData
   const [loading, setLoading] = useState(true); //Loading state to show loading spinner
@@ -36,13 +27,15 @@ const TableUser: React.FC = () => {
   useEffect(() => {
     setTimeout(() => {
       try {
-        if (Math.random() < 0.5) {
+        if (Math.random() < 0.3) {
           throw new Error("Unable to load data");
         }
         setUsers(usersData);
         setError(null);
       } catch (err) {
-        setError(err.message);
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred"
+        );
         setUsers([]);
       } finally {
         setLoading(false);

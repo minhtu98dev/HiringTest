@@ -3,37 +3,49 @@ class ProcessController {
     this.cancelled = false;
   }
 
-  cancel() {
-    this.cancelled = true;
-  }
-
   async processWithDelay(numbers, delay = 1000, onProgress) {
     if (
       !Array.isArray(numbers) ||
       !numbers.every((n) => typeof n === "number")
     ) {
-      throw new Error("Invalid input: numbers must be an array of numbers");
+      console.error("Invalid input: numbers must be an array of numbers");
+      return;
     }
 
-    if (numbers.length === 0) return Promise.resolve();
+    if (numbers.length === 0) {
+      console.log("No numbers to process.");
+      return Promise.resolve();
+    }
 
     for (let i = 0; i < numbers.length; i++) {
       if (this.cancelled) {
         console.log("Process cancelled.");
-        return;
+        return Promise.resolve();
       }
-      console.log(numbers[i]);
+
+      console.log(`Processing: ${numbers[i]}`);
       if (onProgress) onProgress(i + 1, numbers.length);
-      await new Promise((resolve) => setTimeout(resolve, delay));
+
+      await this.delay(delay);
     }
+
+    console.log("Processing completed.");
+    return Promise.resolve();
+  }
+
+  delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  cancel() {
+    this.cancelled = true;
   }
 }
 
-// Example Usage
-const controller = new ProcessController();
-controller.processWithDelay([1, 2, 3, 4, 5], 1000, (processed, total) => {
+// ===== Example Usage =====
+const test = new ProcessController();
+test.processWithDelay([1, 2, 3, 4, 5], 1000, (processed, total) => {
   console.log(`Progress: ${processed}/${total}`);
 });
 
-// To cancel the process (for example, after 2.5 seconds)
-setTimeout(() => controller.cancel(), 2500);
+setTimeout(() => test.cancel(), 3000);
